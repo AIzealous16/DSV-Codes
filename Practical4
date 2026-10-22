@@ -1,0 +1,42 @@
+import pandas as pd 
+import matplotlib.pyplot as plt
+
+#Load Dataset
+df=pd.read_csv("netflix_titles.csv")
+
+print("Original Dataset : ")
+print(df.head())
+
+print("Dataset Shape :",df.shape)
+
+#1.Find Missing Vaues
+print("\nMissing Values : ")
+print(df.isnull().sum())
+
+#2.Remove duplicate records
+df=df.drop_duplicates()
+
+#3.Fill missing values
+df['director']=df['director'].fillna("Unknown")
+df['cast']=df['cast'].fillna("Unknown")
+df['country']=df['country'].fillna("Unknown")
+df['rating']=df['rating'].fillna(df['rating']).mode()[0]
+
+#4.Remove rows with missing title
+df=df.dropna(subset=['title'])
+
+#5.Save cleaned dataset
+df.to_csv("cleaned_netflix.csv",index=False)
+
+print("\nCleaned Dataset : ")
+print(df.head())
+print("Final Shape : ",df.shape)
+
+#6.Plot graph: Movies vs TV Shows
+df['type'].value_counts().plot(kind='bar',color=["blue","red"])
+
+plt.title("Movies vs TV Shows on Netflix")
+plt.xlabel("Type")
+plt.ylabel("Number of Titles")
+plt.tight_layout()
+plt.show()

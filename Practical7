@@ -1,0 +1,28 @@
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Load dataset
+df = pd.read_csv("netflix_titles.csv")
+
+# Select movies
+df = df[df["type"] == "Movie"].copy()
+
+# Convert duration to numbers
+df["duration"] = pd.to_numeric(
+    df["duration"].str.extract(r"(\d+)")[0], errors="coerce")
+
+df = df.dropna(subset=["release_year", "duration"])
+
+# Correlation
+print(df[["release_year", "duration"]].corr())
+
+# Heatmap
+sns.heatmap(df[["release_year", "duration"]].corr(),
+            annot=True, cmap="coolwarm")
+plt.show()
+
+# Regression Plot
+sns.regplot(x="release_year", y="duration", data=df)
+plt.title("Netflix Regression Analysis")
+plt.show()
